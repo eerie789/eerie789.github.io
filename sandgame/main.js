@@ -7,7 +7,7 @@ function getRandomInt(max) {
 }
 
 addButton.addEventListener("click",()=>{
-    const nominal = getRandomInt(27);
+    const nominal = getRandomInt(17);
     for (let i = nominal; i < nominal+3;i++){
         for (let j = 0; j < 3;j++){
             grid[i][j] = 1;
