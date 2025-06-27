@@ -1,92 +1,76 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const addButton = document.getElementById('addButton');
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const debug01 = document.getElementById("debug01")
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
+const width = canvas.width;
+const height = canvas.height;
+
+const grid = new Array(width*height).fill(0);
+function swap(a, b) {
+    const temp = grid[a];
+    grid[a] = grid[b];
+    grid[b] = temp;
 }
-
-addButton.addEventListener("click",()=>{
-    const nominal = getRandomInt(17);
-    for (let i = nominal; i < nominal+3;i++){
-        for (let j = 0; j < 3;j++){
-            grid[i][j] = 1;
-        }
-    }
-})
-
-const rows = 20;
-const cols = 20;
-const size = canvas.width/rows;
-const grid = Array.from({length: rows}, ()=> Array(cols).fill(0));
-let currentRow = rows -1 ;
-
+function isEmpty(index){
+  return grid[index] === 0;
+}
 function update(){
-    const row = currentRow;
-    for (let col = 0; col < cols; col++){
-          if (grid[col][row] === 1) {
-              if (grid[col][row + 1] === 0){
-                  grid[col][row + 1] = 1;
-                  grid[col][row] = 0;
-              } else if (grid[col + 1][row + 1] === 0){
-                  grid[col + 1][row + 1] = 1;
-                  grid[col][row] = 0;
-              } else if (grid[col - 1][row + 1] === 0){
-                  grid[col - 1][row + 1] = 1;
-                  grid[col][row] = 0;
-              } 
-          }
-            /*  if (grid[row][col] === 1) {
-                if (grid[row][col+1] === 0) {
-          // Turun lurus
-                    grid[row][col+1] = 1;
-                    grid[row][col] = 0;
-                } else if (grid[row-1][col+1] === 0){
-                    grid[row-1][col+1] = 1;
-                    grid[row][col] = 0;
-                } else if (grid[row+1][col+1] === 0){
-                    grid[row+1][col+1] = 1;
-                    grid[row][col] = 0;
-                }
-            }*/
+  for(let i = grid.length - width - 1; i > 0; i--){
+    const bellow = i + width;
+    const bellowleft = bellow - 1;
+    const bellowright = bellow + 1;
+    
+    if(isEmpty(bellow)){
+      swap(i,bellow);
+    }else if (i % width !== 0 && isEmpty(bellowleft)){
+      swap(i,bellowleft);
+    }else if ((i + 1) % width !== 0 && isEmpty(bellowright)){
+      swap(i,bellowright);
     }
-    currentRow--;
-    if (currentRow < 0) currentRow = rows -1;
-}
-function draw(ctx){
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-    for (let row = 0; row < rows; row++){
-        for (let col = 0; col < rows;col++){
-            if (grid[row][col] === 1){
-                ctx.fillStyle = 'white';
-                ctx.fillRect(row*size,col*size,size,size);
-            } else {
-                ctx.strokeStyle = 'white';
-                ctx.strokeRect(row*size,col*size,size,size);
-            }
-        }
-    }
-}
-/*
-let lastTime = 0;
-const targetFPS = 120;
-const frameDelay = 1000 / targetFPS; // = 100ms
-
-function gameloop(timestamp) {
-  if (timestamp - lastTime >= frameDelay) {
-    update();
-    draw(ctx);
-    lastTime = timestamp;
   }
-  requestAnimationFrame(gameloop);
+}
+function draw(){
+  ctx.clearRect(0,0,width,height)
+  grid.forEach((val,index) => {
+    if(val === 1) {
+      const x = index % width;
+      const y = Math.floor(index / width);
+      setPixel(x,y)
+    }
+  })
+}
+// touch system
+canvas.addEventListener("touchstart",handleTouch)
+canvas.addEventListener("touchmove",handleTouch)
+function handleTouch(e){
+  e.preventDefault()
+  const rect = canvas.getBoundingClientRect();
+  
+  for (let i = 0; i < e.touches.length; i++){
+    const touch = e.touches[i];
+    const x = Math.floor((touch.clientX - rect.left) * (canvas.width / rect.width));
+    const y = Math.floor((touch.clientY - rect.top) * (canvas.height / rect.width));
+    if (x >= 0 && y >= 0 && x < width && y < height) {
+      grid[y*width+x] = 1;
+      //succes
+      //debug01.innerHTML = `x: ${x} y : ${y}`
+    }
+  }
+}
+function setPixel(x,y){
+  const imgData = ctx.getImageData(x, y, 1, 1);
+  
+  imgData.data[0] = 255; // R
+  imgData.data[1] = 0;   // G
+  imgData.data[2] = 0;   // B
+  imgData.data[3] = 255; // A 
+  
+  ctx.putImageData(imgData, x, y);
 }
 
-requestAnimationFrame(gameloop);
-
-*/
 function gameloop(){
-    update()
-    draw(ctx);
-    requestAnimationFrame(gameloop);
+  update()
+  draw()
+  requestAnimationFrame(gameloop)
 }
-gameloop();
+gameloop()
