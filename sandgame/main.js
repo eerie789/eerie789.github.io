@@ -138,7 +138,7 @@ function update(timestamp){
     detect.nextColor = getRandomInt(4);
     nextCol.style.background = getColor(detect.nextColor)
   }
-  if(!tengah.touched && timestamp - detect.lastFall >= detect.speed ){
+  if(!tengah.touched && timestamp - detect.lastFall > detect.speed ){
     detect.lastFall = timestamp;
     detect.y++;
   } else if (tengah.touched ){
@@ -271,6 +271,7 @@ function gameOver(){
   ctx.fillStyle = 'white';
   ctx.fillRect(detect.x,detect.y-detect.h,detect.w,detect.h)
   if(tetris.score >= tetris.topScore) debug.innerText = `Top Score: ${tetris.score}`;
+tetris.score = 0;
 }
 function boomEffect(gridList){
   setTimeout(()=>{
