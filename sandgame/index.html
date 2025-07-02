@@ -1,32 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>nyoba cuy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TetrisCuy</title>
   <style>
-    *, html, body {
+    body {
+      font-family: "Courier New", Courier, monospace;
       margin: 0;
       padding: 0;
+      background: #444444;
     }
-    canvas {
-      background-color: black;
-      display: block;
-      margin: 10px auto;
-      width: 100vw;
-      height: 100vw;
-      image-rendering: pixelated;
-    }
+  #container {
+    position: absolute;
+    color: white;
+    top: 0;
+    margin: 0 auto;
+    background-color: #1f1f1f;
+  }
+  .top{
+    width: 100%;
+    height: 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+  }
+  .top > div {
+    margin: 0 10px;
+  }
+  #col {
+    width: 5%;
+    height: 50%;
+    background: red;
+  }
+  canvas {
+    margin: 0 2%;
+    height: 90%;
+    width: 96%;
+    background: #1f1f1f;
+    image-rendering: pixelated;
+  }
+  #bottom {
+    width: 100%;
+    height: 5%;
+    text-align: center;
+  }
+  
+  
   </style>
 </head>
 <body>
-
-<canvas id="gameCanvas" width="100" height="100"></canvas>
-  <button id="addButton">TAMBAH</button>
-<script src="./main.js">
-  
-</script>
-
+  <div id="container">
+    <div class="top">
+      <div id="score">Score: 0</div>
+      <div id="col"></div>
+    </div>
+    <canvas id="canvas" width="80" height="150"></canvas>
+    <div id="bottom">Top Score: 0</div>
+  </div>
+  <script src="./drawing.js"></script>
+  <script src="./main.js"></script>
 </body>
 </html>
