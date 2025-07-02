@@ -68,6 +68,7 @@ function gameloop(timestamp){
   }else if(tengah.touched){
     tetris.secPlay = true;
     detect.count = 0;
+    detect.speed = getSpeed(detect.count);
     tengah.touched = false;
     tetris.play = true;
     detect.w = (getRandomInt(2)+1)*5;
